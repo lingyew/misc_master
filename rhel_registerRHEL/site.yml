@@ -1,0 +1,56 @@
+---
+- name: Register RHEL Subscription to RHN
+  hosts: all
+  gather_facts: False  
+  vars_prompt:
+    - name: "rh_username"
+      prompt: "RH Customer Portal Username"
+      private: no
+    - name: "rh_password"
+      prompt: "RH Customer Portal Password"
+      private: yes
+
+  tasks:
+    - name: Manage Red Hat subscription
+      redhat_subscription: 
+        username: "{{ rh_username }}"
+        password: "{{ rh_password }}"
+        autosubscribe: yes
+        state: present
+        pool_ids: 8a85f9815c991391015c99e11dbe6fa4
+
+      
+    - name: Disable all repos
+      command: subscription-manager repos --disable=*
+
+    - name: Enable rhel-7-server-rpms repo
+      command: subscription-manager repos --enable rhel-7-server-rpms
+
+    - name: Enable rhel-7-server-supplementary-rpms repo
+      command: subscription-manager repos --enable rhel-7-server-supplementary-rpms
+      
+    - name: Enable rhel-7-server-rhv-4.1-rpms repo
+      command: subscription-manager repos --enable rhel-7-server-rhv-4.1-rpms
+  
+    - name: Enable rhel-7-server-rhv-4-tools-rpms repo
+      command: subscription-manager repos --enable rhel-7-server-rhv-4-tools-rpms
+
+    - name: Enable jb-eap-7-for-rhel-7-server-rpms repo
+      command: subscription-manager repos --enable jb-eap-7-for-rhel-7-server-rpms
+  
+    - name: Enable rhel-7-server-rh-common-rpms repo
+      command: subscription-manager repos --enable rhel-7-server-rh-common-rpms
+
+    - name: Enable rhel-7-server-rhv-4-mgmt-agent-rpms repo
+      command: subscription-manager repos --enable rhel-7-server-rhv-4-mgmt-agent-rpms
+
+    - name: Enable rhel-7-server-rhv-4.1-manager-rpms repo
+      command: subscription-manager repos --enable rhel-7-server-rhv-4.1-manager-rpms
+  
+    - name: Yum update all
+      yum: 
+        name='*' 
+        state=latest 
+        exclude: kernel*,foo*
+    
+    
