@@ -1,56 +1,60 @@
 ---
+- name: Configure NFS
+  hosts: all
+  gather_facts: False
 
+  tasks:
 # Install NFS, rpcbind, screen
-- name: Install NFS, RPCBinds, and Screen
-  yum: name={{ item }} state=latest
-  with_items:
-    - nfs-utils 
-    - rpcbind 
-    - screen
+    - name: Install NFS, RPCBinds, and Screen
+      yum: name={{ item }} state=latest
+      with_items:
+        - nfs-utils 
+        - rpcbind 
+        - screen
 
  # Configure NFS
-- name: Group add kvm
-  command: groupadd kvm -g 36
-  ignore_errors: yes
+    - name: Group add kvm
+      command: groupadd kvm -g 36
+      ignore_errors: yes
       
-- name: Group adduser vdsm
-  command: useradd vdsm -u 36 -g 36
-  ignore_errors: yes
+    - name: Group adduser vdsm
+      command: useradd vdsm -u 36 -g 36
+      ignore_errors: yes
    
-- name: Create directory for NFS share
-  file:
-    path: "{{ item }}"
-    state: directory
-    owner: vdsm
-    group: kvm
-    mode: 0775
-  with_items:
-    - /home/share/data
-    - /home/share/iso
-    - /home/share/exports
-    - /home/share/rhvm
+    - name: Create directory for NFS share
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: vdsm
+        group: kvm
+        mode: 0775
+      with_items:
+        - /home/share/data
+        - /home/share/iso
+        - /home/share/exports
+        - /home/share/rhvm
 
 # Define /etc/exports file
-- name: copy /etc/exports
-  template: src=exports_file.j2 dest=/etc/exports owner=root group=root
+    - name: copy /etc/exports
+      template: src=exports_file.j2 dest=/etc/exports owner=root group=root
 
 # Define /etc/hosts file
-- name: copy /etc/hosts
-  template: src=hosts_file.j2 dest=/etc/hosts owner=root group=root
+    - name: copy /etc/hosts
+      template: src=hosts_file.j2 dest=/etc/hosts owner=root group=root
     
 
-- name: Start and enable NFS and rpcbind service
-  service: name={{ item }} state=started enabled=yes
-  with_items:
+    - name: Start and enable NFS and rpcbind service
+      service: name={{ item }} state=started enabled=yes
+      with_items:
     - nfs-server
     - rpcbind
         
-- name: enable NFS services in firewalld
-  firewalld:
-    service: "{{ item }}"
-    permanent: true
-    state: enabled
-  with_items:
-    - nfs
-    - mountd
-    - rpc-bind
+    - name: enable NFS services in firewalld
+      firewalld:
+        service: "{{ item }}"
+        permanent: true
+        state: enabled
+      with_items:
+        - nfs
+        - mountd
+        - rpc-bind
