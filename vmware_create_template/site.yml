@@ -13,6 +13,88 @@
   connection: local
   gather_facts: False
 
+  vars_prompt:
+    - name: "vcenter"
+      prompt: "vCenter hostname?"
+      default: "192.168.1.108"
+      private: no
+    - name: "user"
+      prompt: "Enter vsphere username"
+      default: "administrator@vsphere.local"
+      private: no
+    - name: "pass"
+      prompt: "Enter vsphere password"
+      private: yes
+    - name: "esxi_hostname"
+      prompt: "ESXi Hostname where the VM will run"
+      default: "192.168.1.107"
+      private: no
+    - name: "datacenter"
+      prompt: "Datacenter"
+      default: "Datacenter"
+      private: no
+    - name: "datastore"
+      prompt: "Datastore?"
+      default: "datastore1"
+      private: no
+    - name: "vmname"
+      prompt: "VM Name"
+      default: "testvm"
+      private: no
+#    - name: "folder"
+#      prompt: "Folder to store your VM"
+#      default: "/Datacenter/datastore1/testvms/"
+#      private: no
+    - name: "template"
+      prompt: "Template"
+      default: "centos_template"
+      private: no
+    - name: "guestid"
+      prompt: "Guest ID"
+      default: "centos64Guest"
+      private: no
+    - name: "disk"
+      prompt: "Disk Capacity GB"
+      default: "20"
+      private: no
+    - name: "disktype"
+      prompt: "Disk Type"
+      default: "thin"
+      private: no
+    - name: "memory"
+      prompt: "Memory Size (MB)"
+      default: "1024"
+      private: no
+    - name: "cpu"
+      prompt: "Number of CPU"
+      default: "1"
+      private: no
+    - name: "vmip"
+      prompt: "VM IP Address"
+      default: "192.168.1.30"
+      private: no      
+    - name: "netmask"
+      prompt: "Netmask"
+      default: 255.255.255.0
+      private: no
+    - name: "gateway"
+      prompt: "Gateway"
+      default: "192.168.1.1"
+      private: no
+    - name: "dns"
+      prompt: "DNS"
+      default: "8.8.8.8"
+      private: no
+    - name: "devicetype"
+      prompt: "Device Type"
+      default: "vmxnet3"
+      private: no
+    - name: "cluster"
+      prompt: "Cluster"
+      default: HA_PROD
+
+
+
   tasks:
   - name: Deploy guest from template
     vmware_guest:
@@ -20,13 +102,12 @@
       hostname: "{{ vcenter }}"
       username: "{{ user }}"
       password: "{{ pass }}"
-#      esxi_hostname: "{{ esxi_hostname }}"
+ #     esxi_hostname: "{{ esxi_hostname }}"
       datacenter: "{{ datacenter }}"
       cluster: "{{ cluster }}"
       name: "{{ vmname }}"
       state: poweredon
       template: "{{ template }}"
-      folder: NTT_Perkeso/rhel1_template
       guest_id: "{{ guestid }}"
  #     folder: "{{ folder }}"
       disk:
@@ -45,7 +126,7 @@
         gateway: "{{ gateway }}"
         dns_servers: "{{ dns }}"
         device_type: "{{ devicetype }}"
-
+ 
         
       wait_for_ip_address: yes
     delegate_to: localhost
