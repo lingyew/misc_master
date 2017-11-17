@@ -122,8 +122,7 @@
         gateway: "{{ gateway }}"
         dns_servers: "{{ dns }}"
         device_type: "{{ devicetype }}"
-      customization:
-        hostname: "{{ newhostname }}"
+
         
       wait_for_ip_address: yes
     delegate_to: localhost
