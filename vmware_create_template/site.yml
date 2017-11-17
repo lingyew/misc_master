@@ -26,6 +26,7 @@
       name: "{{ vmname }}"
       state: poweredon
       template: "{{ template }}"
+      folder: /rhel_template
       guest_id: "{{ guestid }}"
  #     folder: "{{ folder }}"
       disk:
