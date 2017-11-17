@@ -26,7 +26,7 @@
       name: "{{ vmname }}"
       state: poweredon
       template: "{{ template }}"
-      folder: /vmfs/volumes/59e42a5c-fd5f2415-8847-1402ec8c7c5c/rhel_template
+      folder: /NTT_Perkeso
       guest_id: "{{ guestid }}"
  #     folder: "{{ folder }}"
       disk:
