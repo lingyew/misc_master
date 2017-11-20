@@ -1,5 +1,5 @@
 ---
-# Readme: Need to make sure when creating the template, the base OS have VMware Tools installed. Otherwise, the changing of network IP doesn't work.
+# Note to self: Need to make sure when creating the template, the base OS have VMware Tools installed. Otherwise, the changing of network IP doesn't work.
 
 # On the Ansible server, pre-requisite 
 #  yum install python-pyvmomi
@@ -41,10 +41,6 @@
       prompt: "VM Name"
       default: "testvm"
       private: no
-#    - name: "folder"
-#      prompt: "Folder to store your VM"
-#      default: "/Datacenter/datastore1/testvms/"
-#      private: no
     - name: "template"
       prompt: "Template"
       default: "centos_template"
@@ -109,7 +105,7 @@
       state: poweredon
       template: "{{ template }}"
       guest_id: "{{ guestid }}"
- #     folder: "{{ folder }}"
+      folder: NTT_Perkeso/Test_VM
       disk:
       - size_gb: "{{ disk }}"
         type: "{{ disktype }}"
