@@ -105,7 +105,7 @@
       state: poweredon
       template: "{{ template }}"
       guest_id: "{{ guestid }}"
-      folder: NTT_Perkeso/Test_VM
+      folder: Datacenter/Test_VM
       disk:
       - size_gb: "{{ disk }}"
         type: "{{ disktype }}"
