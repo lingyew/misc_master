@@ -15,7 +15,7 @@
 
   vars_prompt:
     - name: "vcenter"
-      prompt: "vCenter hostname"
+      prompt: "vCenter hostname?"
       default: "192.168.1.108"
       private: no
     - name: "user"
@@ -34,7 +34,7 @@
       default: "Datacenter"
       private: no
     - name: "datastore"
-      prompt: "Datastore"
+      prompt: "Datastore?"
       default: "datastore1"
       private: no
     - name: "vmname"
@@ -51,7 +51,7 @@
       private: no
     - name: "guestid"
       prompt: "Guest ID"
-      default: "centos7_64Guest"
+      default: "centos64Guest"
       private: no
     - name: "disk"
       prompt: "Disk Capacity GB"
@@ -75,7 +75,7 @@
       private: no      
     - name: "netmask"
       prompt: "Netmask"
-      default: "255.255.255.0"
+      default: 255.255.255.0
       private: no
     - name: "gateway"
       prompt: "Gateway"
@@ -84,9 +84,6 @@
     - name: "dns"
       prompt: "DNS"
       default: "8.8.8.8"
-      private: no
-    - name: "hostname"
-      prompt: "Hostname"
       private: no
     - name: "devicetype"
       prompt: "Device Type"
@@ -126,7 +123,7 @@
         dns_servers: "{{ dns }}"
         device_type: "{{ devicetype }}"
       customization:
-        hostname: "{{ hostname }}"
+        hostname: "{{ newhostname }}"
         
       wait_for_ip_address: yes
     delegate_to: localhost

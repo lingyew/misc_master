@@ -1,0 +1,13 @@
+---
+- name: Configure Hostname
+  hosts: all
+  gather_facts: False
+  vars_prompt:
+    - name: "hostname"
+      prompt: "Hostname"
+      default: "192.168.1.108"
+      private: no
+  
+  tasks:
+    - hostname:
+      name: "{{ hostname }}"

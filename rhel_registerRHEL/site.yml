@@ -19,7 +19,6 @@
         state: present
         pool_ids: 8a85f9815c991391015c99e11dbe6fa4
 
-      
     - name: Disable all repos
       command: subscription-manager repos --disable=*
 
