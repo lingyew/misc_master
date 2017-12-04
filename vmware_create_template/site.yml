@@ -1,5 +1,5 @@
 ---
-# Readme: Need to make sure when creating the template, the base OS have VMware Tools installed. Otherwise, the changing of network IP doesn't work.
+# Note to self: Need to make sure when creating the template, the base OS have VMware Tools installed. Otherwise, the changing of network IP doesn't work.
 
 # On the Ansible server, pre-requisite 
 #  yum install python-pyvmomi
@@ -41,10 +41,6 @@
       prompt: "VM Name"
       default: "testvm"
       private: no
-#    - name: "folder"
-#      prompt: "Folder to store your VM"
-#      default: "/Datacenter/datastore1/testvms/"
-#      private: no
     - name: "template"
       prompt: "Template"
       default: "centos_template"
@@ -92,6 +88,9 @@
       prompt: "Device Type"
       default: "vmxnet3"
       private: no
+    - name: "cluster"
+      prompt: "Cluster"
+      default: HA_PROD
 
 
 
@@ -102,13 +101,14 @@
       hostname: "{{ vcenter }}"
       username: "{{ user }}"
       password: "{{ pass }}"
-      esxi_hostname: "{{ esxi_hostname }}"
+ #     esxi_hostname: "{{ esxi_hostname }}"
       datacenter: "{{ datacenter }}"
+      cluster: "{{ cluster }}"
       name: "{{ vmname }}"
       state: poweredon
       template: "{{ template }}"
       guest_id: "{{ guestid }}"
- #     folder: "{{ folder }}"
+      folder: Datacenter/Test_VM
       disk:
       - size_gb: "{{ disk }}"
         type: "{{ disktype }}"
@@ -125,8 +125,12 @@
         gateway: "{{ gateway }}"
         dns_servers: "{{ dns }}"
         device_type: "{{ devicetype }}"
+<<<<<<< HEAD
       customization:
         hostname: "{{ hostname }}"
+=======
+ 
+>>>>>>> origin/master
         
       wait_for_ip_address: yes
     delegate_to: localhost
