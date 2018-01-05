@@ -1,0 +1,2 @@
+[server]
+192.168.1.203 ansible_user=cayleb ansible_password=alamak76 ansible_port=10022 ansible_connection=ssh ansible_become=true ansible_become_pass=alamak76 ansible_ssh_common_args='-o StrictHostKeyChecking=no'

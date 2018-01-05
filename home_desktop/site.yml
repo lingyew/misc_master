@@ -1,0 +1,178 @@
+---
+- name: Configure Desktop
+  hosts: server
+  gather_facts: False
+  become: true
+
+  tasks:
+
+
+# Setting up Buffalo NAS connectivity 
+    - name: Install ntfs-3g cifs
+      apt: name={{ item }} state=latest
+      with_items:
+        - ntfs-3g
+        - cifs-utils
+
+    - name: create credentials
+      file:
+        path: /etc/.smbcredentials
+        state: touch
+        mode: 0744
+
+    - name: insert credentials
+      blockinfile:
+        path: /etc/.smbcredentials
+        block: |
+          username=admin
+          password=hard2getinlah
+
+
+    - name: Create directory
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: 0777
+        owner: cayleb
+        group: cayleb
+      with_items:
+        - /media/nasbt
+        - /media/nasphotos
+
+    - name: chown cayleb:cayleb /media/cayleb
+      file:
+        path: /media/cayleb
+        state: directory
+        mode: 0777
+        owner: cayleb
+        group: cayleb
+
+    - name: Edit fstab1
+      lineinfile:
+        path: /etc/fstab
+        line: '//192.168.1.201/Photos /media/nasphotos cifs credentials=/etc/.smbcredentials,iocharset=utf8,file_mode=0777,dir_mode=0777,uid=1000,gid=1000 0 0'
+ 
+    - name: Edit fstab2
+      lineinfile:
+        path: /etc/fstab
+        line: '//192.168.1.201/bt  /media/nasbt cifs credentials=/etc/.smbcredentials,iocharset=utf8,file_mode=0777,dir_mode=0777,uid=1000,gid=1000 0 0'
+
+    - name: mount all
+      command: mount -a
+      args:
+        warn: no
+      become: true
+
+
+
+# Setting up rsync
+    - name: Install rsync
+      apt: name={{ item }} state=latest
+      with_items:
+        - rsync
+
+# Setting up Samba
+    - name: Install Samba
+      apt: name={{ item }} state=latest
+      with_items:
+        - samba
+        - samba-common-bin
+
+
+    - copy:
+        src: /etc/samba/smb.conf
+        dest: /etc/samba/smb.conf.old
+        remote_src: yes
+
+
+
+    - name: insert shared folder configuration on smb.conf
+      blockinfile:
+        path: /etc/samba/smb.conf
+        block: |
+          [USBHDD]
+          comment = USB Share
+          path = /media/cayleb/Backup1
+          writeable = Yes
+          only guest = Yes
+          create mask = 0777
+          directory mask = 0777
+          browseable = Yes
+          public = yes
+
+    - name: restart samba daemon
+      service: name=smbd state=restarted
+
+
+# Setting up Transmission Daemon
+    - name: Install transmission daemon
+      apt: name={{ item }} state=latest
+      with_items:
+        - transmission-gtk 
+        - transmission-cli 
+        - transmission-common 
+        - transmission-daemon
+
+    - name: Create directory for completed and incomplete torrents
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: 0777
+        owner: cayleb
+        group: cayleb
+      with_items:  
+        - /home/cayleb/Downloads/transmission/completed
+        - /home/cayleb/Downloads/transmission/incomplete
+
+    - name: add user cayleb to the group debian-transmission
+      command: sudo usermod -a -G debian-transmission cayleb
+
+    - name: change ownershop of the transmission download folder to group debian-transmission
+      file:
+        path: /home/cayleb/Downlads/transmission/
+        state: directory
+        group: debian-transmission
+        mode: 0777
+        recurse: yes
+
+
+    - copy:
+        src: /home/cayleb/.config/transmission/settings.json
+        dest: /home/cayleb/.config/transmission/settings.json.old
+        remote_src: yes
+
+    - template:
+        src: settings.json.j2
+        dest: /home/cayleb/.config/transmission/settings.json
+        owner: cayleb
+        group: cayleb
+        mode: 0744
+  
+    - name: restart tranmission daemon
+      service: name=transmission-daemon state=reloaded
+        
+
+
+# Setting up Spotify
+    - name: Add an apt key by id from a keyserver
+      apt_key:
+        keyserver: keyserver.ubuntu.com
+        id: 0DF731E45CE24F27EEEB1450EFDC8610341D9410
+
+    - name: create /etc/apt/sources.list.d/spotify.list file
+      file:
+        path: /etc/apt/sources.list.d/spotify.list
+        state: touch
+        mode: 0744
+
+    - name: Add spotify repository
+      lineinfile:
+        path: /etc/apt/sources.list.d/spotify.list
+        line: 'deb http://repository.spotify.com stable non-free'  
+
+#    - name: Update repositories cache and install spotify-client package
+#      apt:
+#        name: spotify-client
+#        update_cache: yes    
+
+    
