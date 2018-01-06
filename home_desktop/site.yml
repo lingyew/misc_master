@@ -1,6 +1,6 @@
 ---
 - name: Configure Desktop
-  hosts: server
+  hosts: localhost
   gather_facts: False
   become: true
 
@@ -208,4 +208,16 @@
         - grsync
 
 
-    
+# Create the rsync.sh batch file
+    - file:
+        path: /home/cayleb/rsync.sh
+        state: touch
+        mode: 0777
+
+
+    - name: insert rsync syntax
+      blockinfile:
+        path: /home/cayleb/rsync.sh
+        block: |
+          #!/bin/sh
+          rsync -av --delete /media/nasphotos/Photos/ /media/usbhdd/PhotosBackup/ >>/tmp/rsync.log &
