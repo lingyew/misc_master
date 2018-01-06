@@ -175,4 +175,37 @@
 #        name: spotify-client
 #        update_cache: yes    
 
+
+# Remove Guest user on Ubuntu
+    - name: Create directory /etc/lightdm/lightdm.conf.d
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: 0755
+        owner: root
+        group: root
+      with_items:  
+        - /etc/lightdm/lightdm.conf.d
+
+    - file:
+        path: /etc/lightdm/lightdm.conf.d/50-no-guest.conf
+        state: touch
+        mode: 0644
+
+
+    - name: insert shared folder configuration on smb.conf
+      blockinfile:
+        path: /etc/lightdm/lightdm.conf.d/50-no-guest.conf
+        block: |
+          [SeatDefaults]
+          allow-guest=false
+
+
+# Install Grsync
+    - name: Install grsync
+      apt: name={{ item }} state=latest
+      with_items:
+        - grsync
+
+
     
