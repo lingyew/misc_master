@@ -25,7 +25,7 @@
         path: /etc/.smbcredentials
         block: |
           username=admin
-          password=hard2getinlah
+          password=password
 
 
     - name: Create directory
@@ -65,11 +65,12 @@
 
 
 
-# Setting up rsync
+# Setting up rsync, ripperx
     - name: Install rsync
       apt: name={{ item }} state=latest
       with_items:
         - rsync
+        - ripperx
 
 # Setting up Samba
     - name: Install Samba
